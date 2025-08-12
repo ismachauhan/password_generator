@@ -63,16 +63,19 @@ def delete_password(request, password_id):
 def generate_qr_code(request, password_id):
     password = get_object_or_404(Password, id=password_id, user=request.user)
 
+    # If QR already exists and is still valid, skip regeneration
     if password.qr_code and password.qr_expiry and timezone.now() < password.qr_expiry:
-        return redirect('password_history')  # Already valid QR exists
+        return redirect('password_history')
 
+    # Generate QR code image
     img = qrcode.make(password.password)
     buffer = BytesIO()
     img.save(buffer, format='PNG')
-    qr_img = ContentFile(buffer.getvalue())
+    buffer.seek(0)  # ✅ Important: reset pointer
+    qr_img = ContentFile(buffer.read())
 
-    
-    password.qr_code.save(f'qr_{password.id}.png', qr_img)
+    # Save file into MEDIA_ROOT/qr_codes/
+    password.qr_code.save(f'qr_{password.id}.png', qr_img, save=False)
     password.qr_expiry = timezone.now() + timedelta(minutes=10)
     password.is_qr_used = False
     password.save()
