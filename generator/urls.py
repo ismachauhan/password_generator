@@ -7,6 +7,7 @@ urlpatterns = [
     path('history/', views.password_history, name='password_history'),
     path('toggle-favorite/<int:password_id>/', views.toggle_favorite, name='toggle_favorite'),
     path('delete/<int:password_id>/', views.delete_password, name='delete_password'),
-    path('generate-qr/<int:password_id>/', views.generate_qr_code, name='generate_qr'),
-    path('scan-qr/<int:password_id>/', views.scan_qr_code, name='scan_qr'),
+    path('favorites/', views.view_favorites, name='view_favorites'),
+
+    
 ]

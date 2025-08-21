@@ -2,63 +2,270 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Password Generator</title>
+    <title>Advanced Password Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        /* Animated Gradient Background - Light Pastels */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(270deg, lavenderblush, #f3e5f5, #e8eaf6, lavenderblush);
+            background-size: 800% 800%;
+            animation: gradientMove 18s ease infinite;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            color: #444;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Dark Mode Background */
+        body.dark-mode {
+            background: linear-gradient(270deg, #1e1e1e, #2e2e2e, #121212, #1e1e1e);
+            background-size: 800% 800%;
+            color: #ddd;
+        }
+
+        /* Floating Pastel Shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            animation: float 14s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(180deg); }
+        }
+        .shape1 { width: 120px; height: 120px; top: 12%; left: 15%; animation-delay: 0s; background: rgba(230, 210, 250, 0.4); }
+        .shape2 { width: 160px; height: 160px; bottom: 18%; right: 12%; animation-delay: 4s; background: rgba(255, 200, 230, 0.4); }
+        .shape3 { width: 90px; height: 90px; top: 65%; left: 25%; animation-delay: 7s; background: rgba(210, 230, 255, 0.4); }
+
+        /* Card */
+        .solid-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 450px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeSlideIn 0.8s ease forwards;
+            z-index: 10;
+            position: relative;
+        }
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        body.dark-mode .solid-card {
+            background: #2c2c2c;
+            color: #ddd;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Button */
+        .btn-generate {
+            background: linear-gradient(90deg, #f8bbd0, #e1bee7);
+            border: none;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            border-radius: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-generate:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(179, 157, 219, 0.5);
+        }
+        body.dark-mode .btn-generate {
+            background: linear-gradient(90deg, #673ab7, #9c27b0);
+            color: white;
+        }
+
+        /* Password Display */
+        .password-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fce4ec;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            border: 1px solid #f8bbd0;
+            gap: 8px;
+        }
+        body.dark-mode .password-box {
+            background: #3a3a3a;
+            border: 1px solid #673ab7;
+            color: #eee;
+        }
+
+        /* Copy and Favorite Buttons */
+        .copy-btn, .favorite-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: #ad1457;
+            transition: transform 0.2s ease;
+        }
+        .copy-btn:hover, .favorite-btn:hover {
+            transform: scale(1.2);
+            color: #d81b60;
+        }
+        body.dark-mode .copy-btn, body.dark-mode .favorite-btn {
+            color: #bb86fc;
+        }
+
+        /* Header Icon */
+        .header-img {
+            width: 80px;
+            margin: 0 auto 20px;
+            display: block;
+            transition: filter 0.3s ease;
+        }
+        /* Dark Mode Lock Icon (invert to white) */
+        body.dark-mode .header-img {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+            background: rgba(255,255,255,0.7);
+            border: none;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .dark-mode-toggle:hover {
+            background: rgba(255,255,255,1);
+        }
+        body.dark-mode .dark-mode-toggle {
+            background: rgba(50,50,50,0.7);
+        }
+        body.dark-mode .dark-mode-toggle:hover {
+            background: rgba(50,50,50,1);
+        }
+
+        /* View Favorites Button at Bottom */
+        .bottom-favorites {
+            margin-top: 20px;
+            display: inline-block;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+<!-- Floating Shapes -->
+<div class="shape shape1"></div>
+<div class="shape shape2"></div>
+<div class="shape shape3"></div>
 
-            <div class="card shadow rounded-4">
-                <div class="card-header bg-primary text-white text-center rounded-top-4">
-                    <h2>Advanced Password Generator</h2>
-                </div>
-                <div class="card-body p-4">
+<!-- Dark Mode Toggle -->
+<button class="dark-mode-toggle" onclick="toggleDarkMode()">
+    <i class="bi bi-moon-fill"></i>
+</button>
 
-                    <form action="{% url 'generate_password' %}" method="get">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="length" class="form-label">Password Length</label>
-                            <input type="number" class="form-control" name="length" id="length" min="4" max="32" value="12">
-                        </div>
+<div class="solid-card">
+    <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Lock Icon" class="header-img">
+    <h2 class="text-center mb-4" style="color:#6a1b9a;">Lock IT!</h2>
 
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" name="uppercase" id="uppercase">
-                            <label class="form-check-label" for="uppercase">Include Uppercase Letters</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" name="digits" id="digits">
-                            <label class="form-check-label" for="digits">Include Numbers</label>
-                        </div>
-
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="symbols" id="symbols">
-                            <label class="form-check-label" for="symbols">Include Symbols</label>
-                        </div>
-
-                        <button class="btn btn-success w-100">Generate Password</button>
-                    </form>
-
-                    {% if password %}
-                        <div class="alert alert-info mt-4 d-flex justify-content-between align-items-center">
-                            <strong>{{ password }}</strong>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('{{ password }}')">Copy</button>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
+    <form action="{% url 'generate_password' %}" method="get">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="length" class="form-label">Password Length</label>
+            <input type="number" class="form-control" name="length" id="length" min="4" max="32" value="12">
         </div>
+
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="uppercase" id="uppercase">
+            <label class="form-check-label" for="uppercase">Include Uppercase Letters</label>
+        </div>
+
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="digits" id="digits">
+            <label class="form-check-label" for="digits">Include Numbers</label>
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="symbols" id="symbols">
+            <label class="form-check-label" for="symbols">Include Symbols</label>
+        </div>
+
+        <button class="btn-generate w-100">Generate Password</button>
+    </form>
+
+    {% if password %}
+    <div class="password-box mt-3">
+        <span>{{ password.password }}</span>
+
+        <button class="copy-btn" onclick="copyToClipboard('{{ password }}')" title="Copy to clipboard">
+            <i class="bi bi-clipboard"></i>
+        </button>
+
+        <form action="{% url 'toggle_favorite' password.id %}" method="get" style="display:inline;">
+            <input type="hidden" name="password" value="{{ password }}">
+            <button type="submit" class="favorite-btn" title="Toggle Favorite">
+                {% if password in favorite_passwords %}
+                    <i class="bi bi-star-fill"></i>
+                {% else %}
+                    <i class="bi bi-star"></i>
+                {% endif %}
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<!-- View Favorites Button at the very bottom -->
+{% if user.is_authenticated %}
+<a href="{% url 'view_favorites' %}" class="btn btn-primary bottom-favorites">
+    View Favorites
+</a>
+{% endif %}
+
+<!-- Toast Notification -->
+<div id="copyToast" class="toast position-fixed bottom-0 end-0 m-3 align-items-center text-bg-success border-0" role="alert">
+    <div class="d-flex">
+        <div class="toast-body">Copied to clipboard!</div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+    navigator.clipboard.writeText(text).then(() => {
+        let toast = new bootstrap.Toast(document.getElementById('copyToast'));
+        toast.show();
+    });
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
 }
 </script>
 
